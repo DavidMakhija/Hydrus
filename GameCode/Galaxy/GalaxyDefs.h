@@ -11,6 +11,7 @@
 #include <cassert>
 #include <map>
 #include <memory>
+#include <algorithm>
 
 typedef double        Real;
 typedef int           Int;
@@ -26,6 +27,10 @@ typedef std::weak_ptr<Actor>   WeakActorPtr;
 class Process;
 typedef std::shared_ptr<Process> StrongProcessPtr;
 typedef std::weak_ptr<Process>   WeakProcessPtr;
+
+class Event;
+typedef std::shared_ptr<Event> StrongEventPtr;
+typedef std::weak_ptr<Event>   WeakEventPtr;
 
 
 // (Stolen from) Game Code Complete - Chapter 12, page 446-447
@@ -51,7 +56,7 @@ std::shared_ptr<PointerType> MakeStrongPointer(std::weak_ptr<PointerType> aPoint
 	}
 }
 
-#define GET_COMPONENT(type) {GetComponent<type>(type::GetComponentString())}
+#define GET_COMPONENT(type) GetComponent<type>(type::GetComponentString())
 
 enum ActionType
 {

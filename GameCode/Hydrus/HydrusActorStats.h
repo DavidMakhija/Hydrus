@@ -5,7 +5,7 @@ class HydrusActorStats : public ActorComponent
 public:
 	static const std::string gName;
 
-	virtual const std::string GetComponentString() { return gName;}
+	static const std::string GetComponentString() { return gName;}
 
 	void ModifyStats(int aModifier,
 					 const std::string& aStatType,

@@ -15,6 +15,7 @@ void BattleTimer::Update(unsigned long aElapsedTime)
 	{
 		StrongActorPtr actor = this->GetActor().lock();
 		StrongProcessPtr readyProc(GALAXY_NEW ActorReadyProc(actor->GetActorId(),mEncounter));
+		mBusy = true;
 		p_gGame->AddProcess(readyProc);
 	}
 }

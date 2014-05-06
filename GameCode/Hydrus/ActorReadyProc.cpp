@@ -3,6 +3,7 @@
 #include "../Galaxy/StringHandler.h"
 #include "HydrusEncounter.h"
 #include "AttackProc.h"
+#include "Brain.h"
 
 extern StringHandler* g_pStringHandler;
 
@@ -19,13 +20,14 @@ ActorReadyProc::ActorReadyProc(ActorId aActorId,
 enum Process::ProcessResult ActorReadyProc::Update(unsigned long aElapsedTime)
 {
 	StrongActorPtr actor = p_gGame->GetActor(mActorId);
-	enum ActionType act = actor->DetermineAction();
+	Brain* actorBrain = actor->GET_COMPONENT(Brain);
+	enum ActionType act = actorBrain->DetermineAction(mEncounter);
 
 	switch (act)
 	{
 	case ATTACK:
 		{
-			actor->AttackAction(mEncounter);
+			actorBrain->AttackAction(mEncounter);
 
 			return SUCCESS;
 		}

@@ -3,6 +3,8 @@
 #include "HydrusGame.h"
 #include "BattleTimer.h"
 #include "HydrusActorStats.h"
+#include "ArtificialBrain.h"
+#include "HumanBrain.h"
 
 
 void HydrusFactory::Initialize()
@@ -25,7 +27,11 @@ ActorId HydrusFactory::CreateActor(HydrusGame* aGame,
 		}
 		else if (i == "ai")
 		{
-			actor->AddComponent("ai",new BattleTimer(newActor.second)); //WATCH OUT
+			actor->AddComponent("brain",new ArtificialBrain(newActor.second));
+		}
+		else if (i == "humanbrain")
+		{
+			actor->AddComponent("brain", new HumanBrain(newActor.second));
 		}
 		else if (i == "encounter")
 		{
@@ -51,6 +57,7 @@ AttributeVec HydrusFactory::ActorAttributes(const enum ActorType aType)
 		aiStrings.push_back("stats");
 		break;
 	case USER:
+		aiStrings.push_back("humanbrain");
 		aiStrings.push_back("stats");
 		break;
 	}

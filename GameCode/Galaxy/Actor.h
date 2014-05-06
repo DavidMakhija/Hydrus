@@ -44,10 +44,6 @@ public:
 
 	enum ActionType DetermineAction();
 
-	void AttackAction(HydrusEncounter* aEncounter);
-
-	void HumanAttackAction(HydrusEncounter* aEncounter);
-
 	void ActorOnDeath();
 
 	ActorId GetActorId() {return mActorId;}

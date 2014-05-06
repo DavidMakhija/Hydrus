@@ -5,7 +5,7 @@
 class ActorComponent
 {
 public:
-	virtual const std::string GetComponentString() = 0;
+	const std::string GetComponentString() { assert(0); }
 
 	virtual void Update(unsigned long aElapsedTime) {}
 

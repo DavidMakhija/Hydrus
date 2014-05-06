@@ -15,7 +15,9 @@ AttackProc::AttackProc(ActorId aAttacker,
 						 mTimeScale(2000),
 						 mProgress(0)
 {
-
+	//Set target to busy so they can not mutally attack
+	StrongActorPtr target = p_gGame->GetActor(mTarget);
+	target->GET_COMPONENT(BattleTimer)->SetBusyFlag(true);
 }
 
 enum Process::ProcessResult AttackProc::Update(unsigned long aElapsedTime)
@@ -35,15 +37,15 @@ enum Process::ProcessResult AttackProc::Update(unsigned long aElapsedTime)
 	std::cout << p_gGame->GetActorName(mTarget);
 	std::cout << std::endl;
 
-	
+	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
 	if (mProgress == 100)
 	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(10000));
 		StrongActorPtr attacker = p_gGame->GetActor(mAttacker);
 		StrongActorPtr target = p_gGame->GetActor(mTarget);
 		this->Attack(attacker,target);
-		attacker->GetComponent<BattleTimer>("battletimer")->ResetBattleTimer();
+		attacker->GET_COMPONENT(BattleTimer)->ResetBattleTimer();
+		target->GET_COMPONENT(BattleTimer)->SetBusyFlag(false);
 		return SUCCESS;
 	}
 
@@ -56,10 +58,10 @@ void AttackProc::Attack(StrongActorPtr aAttacker, StrongActorPtr aTarget)
 	int attackerDamage = -1;
 	int targetDamage = -10;
 
-	HydrusActorStats* attackerStats = aAttacker->GetComponent<HydrusActorStats>("stats");
+	HydrusActorStats* attackerStats = aAttacker->GET_COMPONENT(HydrusActorStats);
 	attackerStats->ModifyStats(attackerDamage,"health",aTarget->GetName(),COUNTER_ATTACK_DAMAGE);
 
-	HydrusActorStats* targetStats = aTarget->GetComponent<HydrusActorStats>("stats");
+	HydrusActorStats* targetStats = aTarget->GET_COMPONENT(HydrusActorStats);
 	targetStats->ModifyStats(targetDamage,"health",aAttacker->GetName(),ATTACK_DAMAGE);
 
 }
