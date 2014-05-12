@@ -1,6 +1,6 @@
 #include "Process.h"
 
-Process::Process() : mClockStart(clock())
+Process::Process() : mClockStart(clock()), mIsLocked(false)
 {
 
 }

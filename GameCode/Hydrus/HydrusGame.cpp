@@ -4,11 +4,20 @@
 #include "HydrusEncounter.h"
 #include "HydrusGame.h"
 #include "HydrusFactory.h"
+#include "EventData_Hydrus.h"
+#include "HydrusConsoleView.h"
+#include "HydrusEvents.h"
+
 extern StringHandler* g_pStringHandler;
+extern EventManager* p_gEventManager;
+
+HydrusConsoleView* p_gHydrusConsoleView;
+
 
 HydrusGame::HydrusGame()
 {
-
+	using namespace std::placeholders;
+	p_gEventManager->RegisterDelegate(ActorMinHealthEvent::sEventId, std::bind(&HydrusGame::ActorMinimumHealthDelegate, this, _1));
 }
 
 HydrusGame::~HydrusGame()
@@ -18,6 +27,9 @@ HydrusGame::~HydrusGame()
 }
 void HydrusGame::SetupGameState(UInt& aGameSaveData)
 {
+	p_gHydrusConsoleView = GALAXY_NEW HydrusConsoleView();
+
+
 	// Ask the user if they would like to start a 
 	// new game or load one
 	g_pStringHandler->PrintString(GAME_NEW_OR_LOAD);
@@ -111,16 +123,17 @@ void HydrusGame::LoadLevel(const std::string& aLevel)
 void HydrusGame::InitializeMainLoopProcesses()
 {
 	// For right now, lets start off with a battle
-	std::vector<ActorId> initBattleActorIds;
-	initBattleActorIds.push_back(mMainActorMap["Diesel"]);
-	initBattleActorIds.push_back(mMainActorMap["Bomber"]);
+	std::vector<ActorId> initBattleAllyActorIds;
+	initBattleAllyActorIds.push_back(mMainActorMap["Diesel"]);
+	initBattleAllyActorIds.push_back(mMainActorMap["Bomber"]);
 
 	// Make a marine enemy
-	initBattleActorIds.push_back(HydrusFactory::CreateActor(this,"marine",AI));
-	initBattleActorIds.push_back(HydrusFactory::CreateActor(this,"marine",AI));
-	initBattleActorIds.push_back(HydrusFactory::CreateActor(this,"marine",AI));
+	std::vector<ActorId> initBattleEnemyActorIds;
+	initBattleEnemyActorIds.push_back(HydrusFactory::CreateActor("marine", AI));
+	initBattleEnemyActorIds.push_back(HydrusFactory::CreateActor("marine", AI));
+	initBattleEnemyActorIds.push_back(HydrusFactory::CreateActor("marine", AI));
 
-	StrongProcessPtr initialBattle(GALAXY_NEW HydrusEncounter(initBattleActorIds));
+	StrongProcessPtr initialBattle(GALAXY_NEW HydrusEncounter(initBattleAllyActorIds, initBattleEnemyActorIds));
 	this->AddProcess(initialBattle);
 }
 
@@ -129,6 +142,30 @@ ActorId HydrusGame::CreateActorFromUserName(const std::string& aDefaultName)
 {
 	std::string actorName;
 	GalaxyAlgorithms::StringInput(actorName, aDefaultName);
-	return HydrusFactory::CreateActor(this,actorName,USER);
+	return HydrusFactory::CreateActor(actorName,USER);
 
 }
+
+void HydrusGame::ActorMinimumHealthDelegate(EventData* aEventData)
+{
+	EventData_ActorMinHealth* eventData = static_cast<EventData_ActorMinHealth*> (aEventData);
+
+	ActorId minHealthActor = eventData->GetActorId();
+
+	auto it = find_if(mMainActorMap.begin(), mMainActorMap.end(), [=](std::pair<std::string, ActorId> i) -> bool
+	{
+		return (i.second == minHealthActor);
+	});
+
+	if (it == mMainActorMap.end())
+	{
+		this->OnActorDeath(minHealthActor);
+	}
+	else
+	{
+		// Main actors do not terminate here
+		EventData_RemoveProcessIf removalData(minHealthActor);
+		this->RemoveProcessesIf(&removalData);
+	}
+}
+

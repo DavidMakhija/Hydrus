@@ -39,4 +39,7 @@ protected:
 public:
 
 	virtual ActorId CreateActorFromUserName(const std::string& aDefaultName);
+
+	void ActorMinimumHealthDelegate(EventData* aEventData);
+
 };

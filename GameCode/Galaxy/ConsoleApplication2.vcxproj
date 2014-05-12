@@ -81,17 +81,22 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ConsoleView.h" />
+    <ClInclude Include="FactoryHelper.h" />
     <ClInclude Include="Actor.h" />
     <ClInclude Include="ActorComponent.h" />
     <ClInclude Include="Event.h" />
+    <ClInclude Include="EventData.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="GalaxyDefs.h" />
     <ClInclude Include="GalaxyGame.h" />
     <ClInclude Include="GalaxyFactory.h" />
     <ClInclude Include="ActorSet.h" />
     <ClInclude Include="GalaxyAlgorithms.h" />
+    <ClInclude Include="GameView.h" />
     <ClInclude Include="Process.h" />
     <ClInclude Include="ProcessQueue.h" />
+    <ClInclude Include="StatsTrackingProcess.h" />
     <ClInclude Include="StringHandlerEn.h" />
     <ClInclude Include="StringEnums.h" />
     <ClInclude Include="StringHandler.h" />
@@ -99,6 +104,9 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="EventManager.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="GalaxyMain.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>

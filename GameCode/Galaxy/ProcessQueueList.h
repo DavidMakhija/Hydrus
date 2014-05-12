@@ -4,17 +4,19 @@
 class EventData;
 
 
-typedef std::vector<StrongProcessPtr> ProcessPointerContainer;
+typedef std::list<StrongProcessPtr> ProcessPointerContainer;
 
 class ProcessQueue
 {
 private:
 	ProcessPointerContainer mProcessPointers;
-	int mNextProcessIndex;
+	ProcessPointerContainer::iterator mNextProcess;
+
+	ProcessPointerContainer::iterator GetNextProcess();
 
 	bool empty() { return mProcessPointers.empty(); }
 
-	StrongProcessPtr pop(int aIndex);
+
 protected:
 
 public:

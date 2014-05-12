@@ -9,13 +9,14 @@ class Brain : public ActorComponent
 public:
 	Brain(WeakActorPtr aActor) : ActorComponent(aActor) {}
 
-	static const std::string gName;
+	static const std::string sName;
 
-	static const std::string GetComponentString() { return gName; }
+	static const std::string GetComponentString() { return sName; }
 
-	virtual void AttackAction(HydrusEncounter* aEncounter) = 0;
+	virtual void DetermineAction(HydrusEncounter* aEncounter) = 0;
 
-	virtual enum ActionType DetermineAction(HydrusEncounter* aEncounter) = 0;
+	virtual int SelectTarget(ActorId aActorId, HydrusEncounter* aEncounter, enum ActionType aAction) = 0;
+
 private:
 
 };

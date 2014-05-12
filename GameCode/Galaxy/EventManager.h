@@ -1,22 +1,33 @@
+#pragma once
 #include "GalaxyDefs.h"
+#include <map>
+#include <vector>
+#include <functional>
 #include <list>
 
-typedef std::list<int> EventSequence;
+class EventData;
 
 class EventManager
 {
+	typedef std::function<void(EventData*)> EventDelegate;
+	typedef std::vector<EventDelegate> EventDelSequence;
+	typedef std::map<EventId, EventDelSequence> DelegatesMap;
+
+	typedef std::list<StrongEventPtr> EventSequence;
+
 public:
-	EventSequence mEventSeq;
+	EventManager();
 
-	void CreateEvent(StrongEventPtr aEvent);
+	void RegisterDelegate(const EventId& aEventId, EventDelegate aDelegate);
 
-	virtual void EventFire();
+	void DoEvents(unsigned long& aMaxMilliseconds);
 
+	void AddEventToQueue(StrongEventPtr& aEvent);
+
+	void FireEvent(StrongEventPtr& aEvent);
 
 private:
-	EventManager() { assert(0); }
-	~EventManager() {}
-	EventManager(const EventManager&) { assert(0); }
-	EventManager operator=(const EventManager& ){ assert(0); }
+	DelegatesMap mDelegatesMap;
 
+	EventSequence mEventSequence;
 };

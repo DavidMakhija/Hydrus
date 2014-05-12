@@ -3,9 +3,9 @@
 class HydrusActorStats : public ActorComponent
 {
 public:
-	static const std::string gName;
+	static const std::string sName;
 
-	static const std::string GetComponentString() { return gName;}
+	static const std::string GetComponentString() { return sName;}
 
 	void ModifyStats(int aModifier,
 					 const std::string& aStatType,

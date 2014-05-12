@@ -42,9 +42,5 @@ public:
 		assert(it.second); // Component already exists
 	}
 
-	enum ActionType DetermineAction();
-
-	void ActorOnDeath();
-
 	ActorId GetActorId() {return mActorId;}
 };

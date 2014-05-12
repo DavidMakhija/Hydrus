@@ -2,6 +2,8 @@
 #include "GalaxyAlgorithms.h"
 #include "Process.h"
 
+static const int MAX_MILLISECONDS = 20;
+extern EventManager* p_gEventManager;
 
 GalaxyGame::GalaxyGame() : 
 	mActorSet(),
@@ -34,28 +36,12 @@ void GalaxyGame::LoadLevelBase(const std::string& aLevel)
 void GalaxyGame::ProcessMainLoop()
 {
 	this->InitializeMainLoopProcesses();
-
-	mProcessQueue.PrepareProcessing();
-
+	unsigned long maxTime = MAX_MILLISECONDS;
 	while (true)
 	{
-		clock_t currentTime = clock();
-		auto it =  mProcessQueue.GetNextProcess();
-		enum Process::ProcessResult result = (*it)->ProcessUpdate(currentTime);
+		mProcessQueue.DoProcesses(maxTime);
+		p_gEventManager->DoEvents(maxTime);
 
-		switch (result)
-		{
-		case Process::STALL:
-			break;
-		case Process::SUCCESS:
-			mProcessQueue.erase(it);
-			break;
-		case Process::FAIL:
-			mProcessQueue.erase(it);
-			break;
-		default:
-			break;
-		}
 	}
 }
 
@@ -64,9 +50,10 @@ void GalaxyGame::AddProcess(StrongProcessPtr& aProcess)
 	mProcessQueue.AddProcessToQueue(aProcess);
 }
 
-void GalaxyGame::ActorDeath(StrongActorPtr aActor)
+void GalaxyGame::OnActorDeath(ActorId aActorId)
 {
-
+	for (auto& it : mProcessQueue)
+	{
+		it->OnActorDeath(aActorId);
+	}
 }
-
-

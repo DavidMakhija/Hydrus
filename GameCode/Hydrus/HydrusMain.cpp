@@ -4,10 +4,12 @@
 #include "../Galaxy/GalaxyFactory.h"
 #include "../Galaxy/StringHandler.h"
 #include "HydrusFactory.h"
+#include "../Galaxy/EventManager.h"
 
-int* gMediaController = NULL;
-StringHandler* g_pStringHandler = NULL;
-GalaxyGame* p_gGame = NULL;
+int* gMediaController = nullptr;
+StringHandler* g_pStringHandler = nullptr;
+GalaxyGame* p_gGame = nullptr;
+EventManager* p_gEventManager = nullptr;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -32,7 +34,17 @@ int _tmain(int argc, _TCHAR* argv[])
 		return 1;
 	}
 
-	HydrusGame* game = new HydrusGame();
+	try
+	{
+		p_gEventManager = GALAXY_NEW EventManager();
+	}
+	catch (std::exception& e)
+	{
+		fprintf(stdout, "Error generating EventManager\n");
+		return 1;
+	}
+
+	HydrusGame* game = GALAXY_NEW HydrusGame();
 	p_gGame = game;
 
 	game->CreateFactories();
@@ -42,6 +54,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	game->LoadLevel();
 
 	game->ProcessMainLoop();
+
+	SAFE_DELETE(p_gEventManager);
 
 	SAFE_DELETE(game);
 

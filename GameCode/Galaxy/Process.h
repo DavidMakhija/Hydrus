@@ -1,6 +1,7 @@
 #pragma once
 #include "GalaxyDefs.h"
 #include "GalaxyGame.h"
+#include "GalaxyAlgorithms.h"
 
 class Process
 {
@@ -18,7 +19,7 @@ public:
 
 	enum ProcessResult ProcessUpdate(clock_t aCurrentTime)
 	{
-		unsigned long elapsedTime = unsigned long(double(aCurrentTime - mClockStart) / CLOCKS_PER_SEC *1000);
+		unsigned long elapsedTime = GalaxyAlgorithms::ToMilliseconds(mClockStart, aCurrentTime);
 		return this->Update(elapsedTime);
 	}
 
@@ -26,6 +27,23 @@ public:
 	{
 		mChildProcesses.push_back(aProcess);
 	}
+
+	virtual bool OnActorDeath(ActorId aActorId) { return false; }
+
+	bool ProcessRemoval(EventData* aEventData) const
+	{
+		if (mIsLocked)
+		{
+			return false;
+		}
+		return this->ProcessRemovalTest(aEventData);
+	}
+
+	virtual bool ProcessRemovalTest(EventData* aEventData) const { return false; }
+
+	void LockProcess() { mIsLocked = true; }
+
+	void UnLockProcess() { mIsLocked = false; }
 
 protected:
 	Process();
@@ -36,5 +54,7 @@ private:
 	ChildProcessVec mChildProcesses;
 
 	clock_t mClockStart;
+
+	bool mIsLocked;
 
 };

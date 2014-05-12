@@ -3,6 +3,7 @@
 #include "ActorSet.h"
 #include "ProcessQueue.h"
 #include "GalaxyFactory.h"
+#include "EventManager.h"
 
 
 class GalaxyGame
@@ -28,6 +29,10 @@ private:
 	
 	void ProcessMainLoop();
 
+	void DoProcesses(unsigned long aMaxTime);
+
+	void DoEvents(unsigned long aMaxTime);
+
 protected:
 
 	void InitializeBase();
@@ -41,10 +46,11 @@ public:
 
 	void AddProcess(StrongProcessPtr& aProcess);
 
+	void RemoveProcessesIf(EventData* aEventData) { mProcessQueue.RemoveProcessesIf(aEventData); }
+
 	const std::string& GetActorName(const ActorId aActorId){return mActorSet.GetActorName(aActorId);}
 
 	const StrongActorPtr GetActor(const ActorId aActorId) {return mActorSet.GetActorPointer(aActorId);}
 
-	void ActorDeath(StrongActorPtr aActor);
-
+	void OnActorDeath(ActorId aActorId);
 };

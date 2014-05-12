@@ -5,33 +5,37 @@
 #include "HydrusActorStats.h"
 #include "ArtificialBrain.h"
 #include "HumanBrain.h"
+#include "HydrusEvents.h"
+#include "EventData_Hydrus.h"
 
+extern EventManager* p_gEventManager;
+
+extern GalaxyGame* p_gGame;
 
 void HydrusFactory::Initialize()
 {
 
 }
 
-ActorId HydrusFactory::CreateActor(HydrusGame* aGame,
-								   const std::string& aName,
+ActorId HydrusFactory::CreateActor(const std::string& aName,
 								   const enum ActorType aType)
 {
-	std::pair<ActorId,WeakActorPtr> newActor = GalaxyFactory::CreateActor(aGame,aName);
+	IdWeakPtrPair newActor = GalaxyFactory::CreateActor(p_gGame, aName);
 	StrongActorPtr actor = MakeStrongPointer(newActor.second);
 	AttributeVec attVec = HydrusFactory::ActorAttributes(aType);
 	for(std::string& i : attVec)
 	{
 		if (i == "battletimer")
 		{
-			actor->AddComponent("battletimer",new BattleTimer(newActor.second));
+			actor->AddComponent("battletimer",GALAXY_NEW BattleTimer(newActor.second));
 		}
 		else if (i == "ai")
 		{
-			actor->AddComponent("brain",new ArtificialBrain(newActor.second));
+			actor->AddComponent("brain", GALAXY_NEW ArtificialBrain(newActor.second));
 		}
 		else if (i == "humanbrain")
 		{
-			actor->AddComponent("brain", new HumanBrain(newActor.second));
+			actor->AddComponent("brain", GALAXY_NEW HumanBrain(newActor.second));
 		}
 		else if (i == "encounter")
 		{
@@ -39,10 +43,13 @@ ActorId HydrusFactory::CreateActor(HydrusGame* aGame,
 		}
 		else if (i == "stats")
 		{
-			actor->AddComponent("stats",new HydrusActorStats(newActor.second));
+			actor->AddComponent("stats", GALAXY_NEW HydrusActorStats(newActor.second));
 			break;
 		}
 	}
+
+	StrongEventPtr actorCreatedEvent(GALAXY_NEW ActorCreatedEvent(GALAXY_NEW EventData_ActorCreated(newActor)));
+	p_gEventManager->FireEvent(actorCreatedEvent);
 
 	return newActor.first;
 }

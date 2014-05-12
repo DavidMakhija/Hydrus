@@ -4,6 +4,7 @@
 #include <thread>
 #include <chrono>
 #include "HydrusActorStats.h"
+#include "EventData_Hydrus.h"
 
 extern GalaxyGame* p_gGame;
 
@@ -16,8 +17,10 @@ AttackProc::AttackProc(ActorId aAttacker,
 						 mProgress(0)
 {
 	//Set target to busy so they can not mutally attack
+	StrongActorPtr attacker = p_gGame->GetActor(mAttacker);
 	StrongActorPtr target = p_gGame->GetActor(mTarget);
-	target->GET_COMPONENT(BattleTimer)->SetBusyFlag(true);
+	attacker->GET_COMPONENT(BattleTimer)->SetActorState(BattleTimerState::ATTACKING, true);
+	target->GET_COMPONENT(BattleTimer)->SetActorState(BattleTimerState::BEING_ATTACKED,true);
 }
 
 enum Process::ProcessResult AttackProc::Update(unsigned long aElapsedTime)
@@ -45,7 +48,8 @@ enum Process::ProcessResult AttackProc::Update(unsigned long aElapsedTime)
 		StrongActorPtr target = p_gGame->GetActor(mTarget);
 		this->Attack(attacker,target);
 		attacker->GET_COMPONENT(BattleTimer)->ResetBattleTimer();
-		target->GET_COMPONENT(BattleTimer)->SetBusyFlag(false);
+		attacker->GET_COMPONENT(BattleTimer)->SetActorState(BattleTimerState::ATTACKING, false);
+		target->GET_COMPONENT(BattleTimer)->SetActorState(BattleTimerState::BEING_ATTACKED,false);
 		return SUCCESS;
 	}
 
@@ -64,4 +68,27 @@ void AttackProc::Attack(StrongActorPtr aAttacker, StrongActorPtr aTarget)
 	HydrusActorStats* targetStats = aTarget->GET_COMPONENT(HydrusActorStats);
 	targetStats->ModifyStats(targetDamage,"health",aAttacker->GetName(),ATTACK_DAMAGE);
 
+}
+
+
+bool AttackProc::ProcessRemovalTest(EventData* aEventData) const
+{
+	EventData_RemoveProcessIf* eventData = static_cast<EventData_RemoveProcessIf*> (aEventData);
+
+	ActorId removedActorId = eventData->GetActorBeingRemovedFromProcs();
+
+	if ((mAttacker == removedActorId) || (mTarget == removedActorId))
+	{
+		return true;
+	}
+	return false;
+}
+
+AttackProc::~AttackProc()
+{
+	//Set target to busy so they can not mutally attack
+	StrongActorPtr attacker = p_gGame->GetActor(mAttacker);
+	StrongActorPtr target = p_gGame->GetActor(mTarget);
+	attacker->GET_COMPONENT(BattleTimer)->SetActorState(BattleTimerState::ATTACKING, false);
+	target->GET_COMPONENT(BattleTimer)->SetActorState(BattleTimerState::BEING_ATTACKED, false);
 }

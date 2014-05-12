@@ -6,9 +6,9 @@ class HumanBrain : public Brain
 public:
 	HumanBrain(WeakActorPtr aActor) : Brain(aActor) {}
 
-	virtual void AttackAction(HydrusEncounter* aEncounter);
+	virtual void DetermineAction(HydrusEncounter* aEncounter);
 
-	virtual enum ActionType DetermineAction(HydrusEncounter* aEncounter);
+	virtual int SelectTarget(ActorId aActorId, HydrusEncounter* aEncounter, enum ActionType aAction);
 
 private:
 

@@ -23,6 +23,7 @@ typedef std::string ComponentId;
 class Actor;
 typedef std::shared_ptr<Actor> StrongActorPtr;
 typedef std::weak_ptr<Actor>   WeakActorPtr;
+typedef std::pair<ActorId, WeakActorPtr> IdWeakPtrPair;
 
 class Process;
 typedef std::shared_ptr<Process> StrongProcessPtr;
@@ -31,6 +32,7 @@ typedef std::weak_ptr<Process>   WeakProcessPtr;
 class Event;
 typedef std::shared_ptr<Event> StrongEventPtr;
 typedef std::weak_ptr<Event>   WeakEventPtr;
+typedef std::string EventId;
 
 
 // (Stolen from) Game Code Complete - Chapter 12, page 446-447

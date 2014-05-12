@@ -20,12 +20,13 @@ namespace GalaxyAlgorithms
 		}
 	}
 
-	static int AskForTargetId(std::string& aString)
+	static int AskForTargetIndex(std::string& aString)
 	{
 		// Get the target
 		std::string targetId;
 		GalaxyAlgorithms::StringInput(targetId, aString);
 		return stoi(targetId);
+
 	}
 
 
@@ -44,5 +45,16 @@ namespace GalaxyAlgorithms
 			return ATTACK;
 		}
 		return ATTACK;
+	}
+
+	static unsigned long ToMilliseconds(clock_t aStartTime, clock_t aEndTime)
+	{
+		return unsigned long(double(aEndTime - aStartTime) / CLOCKS_PER_SEC * 1000);
+	}
+
+	static long TimeRemaining(unsigned long aMaxTime, clock_t aRefTime, clock_t aCurrTime)
+	{
+		long timeRemaining = aMaxTime - GalaxyAlgorithms::ToMilliseconds(aRefTime, aCurrTime);
+		return timeRemaining;
 	}
 }

@@ -36,13 +36,7 @@
     <ClInclude Include="HydrusFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FactoryHelper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BattleTimer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ActorReadyProc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Brain.h">
@@ -54,6 +48,21 @@
     <ClInclude Include="HumanBrain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EventData_Hydrus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HydrusEncounter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HydrusConsoleView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HydrusEvents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BattleTimerState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -63,9 +72,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HydrusMain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ActorReadyProc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AttackProc.cpp">
@@ -87,6 +93,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="HumanBrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HydrusConsoleView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HydrusEvents.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

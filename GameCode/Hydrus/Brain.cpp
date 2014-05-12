@@ -1,4 +1,4 @@
 #include "Brain.h"
 
-const std::string Brain::gName = "brain";
+const std::string Brain::sName = "brain";
 

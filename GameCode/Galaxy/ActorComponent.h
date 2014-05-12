@@ -16,8 +16,6 @@ protected:
 	~ActorComponent() {}
 private:
 
-
-
 	ActorComponent(const ActorComponent& aActorComponent) {assert(0);}
 	ActorComponent& operator=(const ActorComponent& aActorComponent) {assert(0);}
 

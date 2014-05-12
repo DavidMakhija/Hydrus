@@ -2,11 +2,14 @@
 #include "../Galaxy/StringHandler.h"
 #include "../Galaxy/Actor.h"
 #include "HydrusGame.h"
+#include "HydrusEvents.h"
+#include "BattleTimer.h"
 
 extern StringHandler* g_pStringHandler;
 extern GalaxyGame* p_gGame;
+extern EventManager* p_gEventManager;
 
-const std::string HydrusActorStats::gName = "stats";
+const std::string HydrusActorStats::sName = "stats";
 
 void HydrusActorStats::ModifyStats(int aModifier,
 					 const std::string& aStatType,
@@ -38,7 +41,8 @@ void HydrusActorStats::ChangeHealth(int aModifier)
 	if (mHealth == mMinHealth)
 	{
 		StrongActorPtr actor = MakeStrongPointer(this->GetActor());
-		p_gGame->ActorDeath(actor);
+		actor->GET_COMPONENT(BattleTimer)->SetActorState(BattleTimerState::MINIMUM_HEALTH,true);
+		p_gEventManager->FireEvent(StrongEventPtr(GALAXY_NEW ActorMinHealthEvent(GALAXY_NEW EventData_ActorMinHealth(actor->GetActorId()))));
 	}
 }
 
