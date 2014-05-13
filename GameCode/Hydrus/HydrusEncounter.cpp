@@ -3,6 +3,7 @@
 #include "HydrusEvents.h"
 #include "AttackProc.h"
 #include "EventData_Hydrus.h"
+#include "HydrusActorStats.h"
 
 extern GalaxyGame* p_gGame;
 
@@ -16,18 +17,24 @@ HydrusEncounter::HydrusEncounter(const std::vector<ActorId>& aActorIdsSide1, con
 		for (auto i : j.second)
 		{
 			StrongActorPtr actor = p_gGame->GetActor(i);
-			if (actor->GetComponent<BattleTimer>("battletimer") == nullptr)
+			if (actor->GET_COMPONENT(BattleTimer) == nullptr)
 			{
 				actor->AddComponent("battletimer", GALAXY_NEW BattleTimer(actor));
 			}
-			actor->GetComponent<BattleTimer>("battletimer")->SetEncounter(this);
+			actor->GET_COMPONENT(BattleTimer)->SetEncounter(this);
 		}
 	}
 }
 
 enum Process::ProcessResult HydrusEncounter::Update(unsigned long aElapsedTime)
 {
-	if ((mActorIdSeqs[0].size() == 0) || (mActorIdSeqs[1].size() == 0))
+	bool allMainCharactersDead =
+		std::all_of(mActorIdSeqs[0].begin(), mActorIdSeqs[0].end(), [](ActorId i)
+		{
+			return p_gGame->GetActor(i)->GET_COMPONENT(HydrusActorStats)->IsMinHealth();
+		});
+
+	if (allMainCharactersDead || (mActorIdSeqs[1].size() == 0))
 	{
 		std::cout << "THE BATTLE IS OVER!\n";
 		return SUCCESS;

@@ -2,6 +2,7 @@
 #include "../Galaxy/GalaxyDefs.h"
 #include "../Galaxy/Process.h"
 class GalaxyGame;
+class HydrusActorStats;
 
 class AttackProc : public Process
 {
@@ -20,6 +21,11 @@ private:
 	int mTimeScale;
 
 	void Attack(StrongActorPtr aAttacker, StrongActorPtr aTarget);
+
+	void ComputeHealthModifiers(const HydrusActorStats* aAttacker,
+		                        const HydrusActorStats* aTarget,
+								int& aAttackerDamage,
+								int& aTargetDamage);
 
 	bool ProcessRemovalTest(EventData* aEventData) const;
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "Brain.h"
 #include "HydrusEncounter.h"
+#include <algorithm>
 
 class ArtificialBrain : public Brain
 {
@@ -14,10 +15,6 @@ public:
 		aEncounter->CreateTargetedProc(actor->GetActorId(), targetId, ATTACK);
 	}
 
-	virtual int SelectTarget(ActorId aActorId, HydrusEncounter* aEncounter, enum ActionType aAction)
-	{
-		std::vector<ActorId> enemyActors = aEncounter->GetOppenentIdVec(aActorId);
-		return enemyActors[0];
-	}
+	virtual int SelectTarget(ActorId aActorId, HydrusEncounter* aEncounter, enum ActionType aAction);
 
 };

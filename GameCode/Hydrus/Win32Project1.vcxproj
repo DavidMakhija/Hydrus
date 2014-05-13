@@ -107,6 +107,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ArtificialBrain.cpp" />
     <ClCompile Include="Brain.cpp" />
     <ClCompile Include="HumanBrain.cpp" />
     <ClCompile Include="HydrusConsoleView.cpp" />

@@ -57,15 +57,39 @@ enum Process::ProcessResult AttackProc::Update(unsigned long aElapsedTime)
 	return STALL;
 }
 
+// -------------------------NON MEMBER! ----------------
+
+void tempAttackFunc(const HydrusActorStats* aAttacker,
+					const HydrusActorStats* aTarget,
+					int& aAttackerDamage,
+					int& aTargetDamage)
+{
+	int attackerVit = aAttacker->GetVitality();
+	int attackerStr = aAttacker->GetStrength();
+
+	int targetVit = aAttacker->GetVitality();
+	int targetStr = aAttacker->GetStrength();
+
+	// I suppose I should make a generic function class, eh?
+	aAttackerDamage = -targetStr*double((10.0 / attackerVit + (rand() % 50)/100.0)/5.0);
+	aTargetDamage   = -attackerStr*double(10.0 / attackerVit + (rand() % 50) / 100.0);
+
+}
+
+// -------------------------NON MEMBER! ----------------
+
+
 void AttackProc::Attack(StrongActorPtr aAttacker, StrongActorPtr aTarget)
 {
 	int attackerDamage = -1;
 	int targetDamage = -10;
 
 	HydrusActorStats* attackerStats = aAttacker->GET_COMPONENT(HydrusActorStats);
-	attackerStats->ModifyStats(attackerDamage,"health",aTarget->GetName(),COUNTER_ATTACK_DAMAGE);
-
 	HydrusActorStats* targetStats = aTarget->GET_COMPONENT(HydrusActorStats);
+
+	tempAttackFunc(attackerStats, targetStats, attackerDamage, targetDamage);
+
+	attackerStats->ModifyStats(attackerDamage,"health",aTarget->GetName(),COUNTER_ATTACK_DAMAGE);
 	targetStats->ModifyStats(targetDamage,"health",aAttacker->GetName(),ATTACK_DAMAGE);
 
 }
@@ -92,3 +116,6 @@ AttackProc::~AttackProc()
 	attacker->GET_COMPONENT(BattleTimer)->SetActorState(BattleTimerState::ATTACKING, false);
 	target->GET_COMPONENT(BattleTimer)->SetActorState(BattleTimerState::BEING_ATTACKED, false);
 }
+
+
+
